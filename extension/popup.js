@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
         active: true,
         currentWindow: true,
       });
+
+      console.log("Active Tab:", tab)
+
       const response = await chrome.tabs.sendMessage(tab.id, {
         action: "getPageContent",
       });
@@ -27,7 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Call OpenAI API to summarize (implementation needed)
       const summaryContent = await callOpenAIAPI(response.content);
-
+      if (!summaryContent) {
+        summaryElement.textContent = "Api call not working"
+      }
       updateSummary(summaryContent);
     } catch (error) {
       console.error("Error summarizing page:", error);
@@ -59,9 +64,17 @@ document.addEventListener("DOMContentLoaded", function () {
 // Placeholder function for OpenAI API call
 async function callOpenAIAPI(content) {
   // Implement the API call to OpenAI here
-  
+
+  const response = await fetch("http://localhost:3000/api/summarize", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: content })
+  })
+
+  const final1 = await response.json()
+  console.log(final1)
   let final = String(content)
   // let final = String(content).substring(0, 300);
-  return `🔥🔥🔥${final}`;
+  return `🔥🔥🔥${final1}`;
   return "This is a placeholder summary. Implement the actual OpenAI API call.";
 }

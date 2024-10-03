@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Note:
 
-## Getting Started
+1. added api call to /api/summarize -> in popup.js
+2. route.ts
+    - it contains the code that take req (text) 
+    - send it to openai api for summarization
+    - returns a response back
 
-First, run the development server:
+## Problem
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Insufficient quota when run using postman 
+    - pass some text in the body - getting an error i.e insufficient quota
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Extension
+    - it is showing an error while calling callOpenAiApi function
+        - popup.js:38
+    
+    - it is returning an object 🔥🔥🔥[object ] - when used on plain html page
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+    - that means that fetch api call is working perfectly fine from popup.js
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Doubt 
 
-## Learn More
+1. Is the openai API key a problem
+   Or
+2. something wrong with the dammn code
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Implementing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Axios call just to be on the safer side - that the code is working fine & the problem is the openai api key and not the code
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
