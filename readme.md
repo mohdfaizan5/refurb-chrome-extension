@@ -30,3 +30,8 @@
 
 - Axios call just to be on the safer side - that the code is working fine & the problem is the openai api key and not the code
 
+- axios.post not working
+    - something wrong while importing 
+        - tried require ES5
+        - as well as import ES6 
+

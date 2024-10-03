@@ -1,3 +1,7 @@
+// const { axios } = require("axios");
+// const axios = require('axios');
+// import axios from "axios";
+
 document.addEventListener("DOMContentLoaded", function () {
   const summaryElement = document.getElementById("summary");
   const charCountElement = document.getElementById("charCount");
@@ -70,6 +74,8 @@ async function callOpenAIAPI(content) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text: content })
   })
+
+  // const response = await axios.post("http://localhost:3000/api/summarize", content)
 
   const final1 = await response.json()
   console.log(final1)
