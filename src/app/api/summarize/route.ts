@@ -13,7 +13,10 @@ const openai = new OpenAI({
 
 
 export async function GET() {
+    // return 'hi'
     return NextResponse.json({ data: "Route is up!!" })
+    // const summary = await summarizeText(text)
+    //     return NextResponse.json({ summary })
 }
 
 export async function POST(req: NextRequest) {
@@ -38,7 +41,7 @@ export async function POST(req: NextRequest) {
 async function summarizeText(text: string) {
 
     const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4",
         messages: [
             {
                 role: "system", content: "You are a helpful assistant that summarizes text concisely"
@@ -47,7 +50,7 @@ async function summarizeText(text: string) {
                 role: "user", content: `Summarize the following text: \n\n ${text}`
             }
         ],
-        max_tokens: 10
+        max_tokens: 100
     })
 
     console.log(response);

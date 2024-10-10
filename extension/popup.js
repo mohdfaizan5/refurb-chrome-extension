@@ -81,6 +81,6 @@ async function callOpenAIAPI(content) {
   console.log(final1)
   let final = String(content)
   // let final = String(content).substring(0, 300);
-  return `🔥🔥🔥${final1}`;
+  return `🔥🔥🔥${final1.summary}`;
   return "This is a placeholder summary. Implement the actual OpenAI API call.";
 }
