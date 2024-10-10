@@ -1,7 +1,3 @@
-// const { axios } = require("axios");
-// const axios = require('axios');
-// import axios from "axios";
-
 document.addEventListener("DOMContentLoaded", function () {
   const summaryElement = document.getElementById("summary");
   const charCountElement = document.getElementById("charCount");
@@ -23,24 +19,30 @@ document.addEventListener("DOMContentLoaded", function () {
         currentWindow: true,
       });
 
-      console.log("Active Tab:", tab)
+      if (!tab) {
+        throw new Error("No active tab found");
+      }
 
       const response = await chrome.tabs.sendMessage(tab.id, {
         action: "getPageContent",
       });
 
-      console.log("Received response:", response);
-      //   alert("Received response:", response);
+      if (chrome.runtime.lastError) {
+        throw new Error(chrome.runtime.lastError.message);
+      }
 
-      // Call OpenAI API to summarize (implementation needed)
+      if (!response || !response.content) {
+        throw new Error("Invalid response from content script");
+      }
+
       const summaryContent = await callOpenAIAPI(response.content);
       if (!summaryContent) {
-        summaryElement.textContent = "Api call not working"
+        throw new Error("API call not working");
       }
       updateSummary(summaryContent);
     } catch (error) {
       console.error("Error summarizing page:", error);
-      summaryElement.textContent = "Failed to summarize the page.";
+      summaryElement.textContent = `Failed to summarize the page: ${error.message}`;
     }
   }
 
@@ -49,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (
       summary &&
       summary !== "Summarizing..." &&
-      summary !== "Failed to summarize the page."
+      !summary.startsWith("Failed to summarize the page")
     ) {
       const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
         summary
@@ -65,22 +67,26 @@ document.addEventListener("DOMContentLoaded", function () {
   summarizeCurrentPage();
 });
 
-// Placeholder function for OpenAI API call
 async function callOpenAIAPI(content) {
-  // Implement the API call to OpenAI here
+  try {
+    const response = await fetch("https://refurb-chrome-extension.vercel.app/api/summarize", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: `${content}, the above is the content of the chrome tab, your job is to summarize this for me in less than 290 characters` })
+    });
 
-  const response = await fetch("http://localhost:3000/api/summarize", {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text: content })
-  })
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-  // const response = await axios.post("http://localhost:3000/api/summarize", content)
+    const data = await response.json();
+    if (!data.summary) {
+      throw new Error("No summary returned from API");
+    }
 
-  const final1 = await response.json()
-  console.log(final1)
-  let final = String(content)
-  // let final = String(content).substring(0, 300);
-  return `🔥🔥🔥${final1.summary}`;
-  return "This is a placeholder summary. Implement the actual OpenAI API call.";
+    return `${data.summary}`;
+  } catch (error) {
+    console.error("Error calling OpenAI API:", error);
+    throw error;
+  }
 }
